@@ -1,3 +1,39 @@
 # Speech Processing 2 Project Notes
 
 ## Cascade and parallel formant synthesis
+- python version 3.11.11
+
+### visualise a sound file using python
+- short-time fourier transform (stft)
+- how to calculate the spectrogram, plot it, and save it
+
+- accordiing to john holmes, formant bandwidths in a parallel synth must all be the same
+
+### how to make a synth in python
+- create new variables for each note
+def createNote (noteName="A4", type="sine", amp=0.5, beats=1.0, filter=None, cutoff=None, fileName="defaultFileName") (we don't need a specific note)
+- initialize your values
+frequency
+duration
+signal
+- add harmonics to the signal according to fourier synthesis coefficients
+for i in range(0, 8):
+    signal += thinkdsp.SinSignal(freq=frequency*i, amp=amp*fourierCoeffs[type][i], offset=0)
+- convert signal into wave to .wav file to AudioSegment to be mixed and played by the program
+wave = signal.make_wave(duration=duration, start=0, framerate=44100)
+wave.write
+
+### packages installed
+- pydub 0.25.1 (joanise and jiaaro)
+- simpleaudio 1.0.4
+- numpy
+- thinkdsp (Think DSP: Digital Signal Processing in Python, by Allen B. Downey.)
+
+amps = np.array([0.5, 0.5, 0.5])
+freqs = [700, 1100, 2540]
+framerate = 44100
+
+ts = np.linspace(0, 1, framerate, endpoint=False)
+ys = synthesize1(amps, freqs, ts)
+ys.apodize()
+ys.make_audio()
