@@ -1,4 +1,5 @@
 # andys template
+# co dr andrew murphy, tcd 2025
 
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -30,6 +31,20 @@ def generate_sawtooth(F0, sample_rate, duration):
     signal = sawtooth(2 * np.pi * F0 * t)
     return signal
 
+# formant frequencies and bandwidths for different vowels
+formants_a = [730, 1100, 2540, 3400, 4000]  # formants for vowel "a"
+formants_i = [280, 2250, 2890, 3400, 4000]  # formants for vowel "i"
+formants_u = [310, 870, 2250, 3200, 4000]  # formants for vowel "u"
+
+# choose the vowel sound to synthesize
+vowel = 'i'  # Choose from 'a', 'i', 'u'
+
+if vowel == 'a':
+    formants = formants_a
+elif vowel == 'i':
+    formants = formants_i
+else:
+    formants = formants_u
 # ==============================
 # Filters
 # ==============================
@@ -182,7 +197,9 @@ if __name__ == '__main__':
 
     # layer f0s in parallel or cascade (arrays?) 
 
-    # generate wav files !!!
+    # Save the sound file
+    import soundfile as sf
+    sf.write(f"{vowel}_vowel.wav", low_pass_out, sample_rate)
 
     # Plot Frequency Responses
     A_f, B_f, C_f = formant_coeffs
