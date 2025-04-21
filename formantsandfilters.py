@@ -210,49 +210,6 @@ plot_response(three_parallel_H, fs, '3 parallel formant resonator response')
 sf.write(f"parallel_a_vowel.wav", three_parallel_output, fs)
 
 # %%
-# --- Differentiator (f2 and f3) ---
-# y[n] = (x[n] – x[n-1]) / T_s
-def differentiator(signal, fs):
-    T_s = 1 / fs
-    y = np.zeros_like(signal)
-    # For first sample, approximate as x[0]/T_s
-    y[0] = signal[0] / T_s
-    for n in range(1, len(signal)):
-        y[n] = 1/T_s*signal[n] - 1/T_s*signal[n-1]
-    # Transfer function: H(z)= (1 - z^(-1))/T_s, so numerator = [1, -1] and denominator = [T_s]
-    return y, (1, -1, 0)
-
-# %%
-""" # first is a pre emphasis
-
-y[n]=Apre​⋅(x[n]−Bpre​⋅x[n−1])
-
-where Bpre=EXP(-2*PI()*f_pre*T_s), Apre=1-Bpre and f_pre=640
-
-# Then a low-pass filter:
-
-y[n]=ALP​⋅x[n]+BLP​⋅y[n−1]
-
-where BLP=EXP(-2*PI()*f_allpass*T_s), ALP=1-BLP and f_allpass=270
-
-# and then a final high-pass:
-
-y[n]=ApreAll​​⋅(x[n]−BpreAll​⋅x[n−1])
-
-where BpreAll=EXP(-2*PI()*(-f_allpass)*T_s) and ApreAll=1-BpreAll.
-
-# Each filter feeds into the next."""
-
-# %%
-diff_f2, diff_second_H = differentiator(second_rez, fs)
-diff_f3, diff_third_H = differentiator(third_rez, fs)
-
-# %%
-diff_par_output = G1 * first_rez - G2 * diff_f2 + G3 * diff_f3
-diff_par_H = G1 * first_H - G2 * second_H + G3 * third_H
-# alternating the polarity
-
-# %%
 def plot_response_overlay(H, sample_rate, label):
     f = np.linspace(0, sample_rate/2, len(H))
     amplitude = 20 * np.log10(np.abs(H))
